@@ -1,0 +1,6 @@
+<title>All Users</title>
+{% for s in users %}
+    <li>
+        {{ s.name }} (ID: {{ s.id }})
+    </li>
+{% endfor %}
