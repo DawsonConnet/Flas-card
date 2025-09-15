@@ -1,2 +1,6 @@
-<div><b>{{card.question}}</b></div> 
-    <div>{{card.answer}}</div> <br>
+{% extends "base.html" %}
+
+{% block head %}
+    <div><b>{{card.front}}</b></div> 
+    <div>{{card.back}}</div> <br>
+{% endblock %}

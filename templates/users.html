@@ -1,6 +1,9 @@
-<title>All Users</title>
-{% for s in users %}
-    <li>
-        {{ s.name }} (ID: {{ s.id }})
-    </li>
-{% endfor %}
+{% extends "base.html" %}
+    
+{% block content %}
+    {% for s in users %}
+        <li>
+            {{ s.name }} (ID: {{ s.id }})
+        </li>
+    {% endfor %}
+{% endblock %}

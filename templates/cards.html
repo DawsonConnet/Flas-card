@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>All Cards</h1>
+    <ul>
+        {% for c in cards %}
+            <li>
+                <a href="/cards/{{ c.id }}">{{ c.front }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
