@@ -120,7 +120,7 @@ async def get_set(request: Request, set_id: int, session: SessionDep):
     if not db_set:
         return {"error": "Set not found"}
     return templates.TemplateResponse(
-        "set_detail.html",
+        "set.html",
         {"request": request, "set": db_set}
     )
 
@@ -142,9 +142,12 @@ async def mark_attempt(card_id: int):
 
 #Post Request to add card
 @app.post("/card/add")
-async def addCard(card:Card):
-    card_list.append(card)
-    return card_list
+async def addCard(session: SessionDep, card:Card):
+    db_card = Card(front=card.front, back=card.back, set_id=card.set_id)
+    session.add(db_card)
+    session.commit()
+    session.refresh(db_card)
+    return db_card
 
 @app.post("/sets/add")
 async def create_set(session: SessionDep, set:Set):

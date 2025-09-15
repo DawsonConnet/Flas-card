@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<h1>{{ set.name }}</h1>
+<ul>
+    {% for card in set.cards %}
+        <li>
+            <a>
+            {{ card.front }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}
+
+

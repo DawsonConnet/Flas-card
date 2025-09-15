@@ -1,9 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-    {% for s in sets %}
-        <li>
-            {{ s.name }} (ID: {{ s.id }})
-        </li>
-    {% endfor %}
+    <h1>All Sets</h1>
+    <ul>
+        {% for s in sets %}
+            <li>
+                <a href="{{ url_for('get_set', set_id=s.id) }}">{{ s.name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
 {% endblock %}
