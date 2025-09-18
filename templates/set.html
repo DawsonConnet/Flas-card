@@ -3,6 +3,7 @@
 
 {% block content %}
 <h1>{{ set.name }}</h1>
+<div><a href="/sets/{{ set.id }}">Go to this set</a></div
 <ul>
     {% for card in set.cards %}
         <li>

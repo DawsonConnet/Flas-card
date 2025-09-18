@@ -1,8 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from typing import List
 from pydantic import BaseModel
 from fastapi.templating import Jinja2Templates
-from fastapi import Request
+from fastapi import Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
@@ -69,60 +69,47 @@ card_list = [Card(id=1, front="When is silksong?", back="Yesterday", set_id=1)
 
 @app.get("/", response_class=HTMLResponse)
 async def root(request:Request):
-    return templates.TemplateResponse(
-        request=request, name="index.html", context={"cards": card_list}
-    )
+    return templates.TemplateResponse(request, "index.html", {"card": card_list})
 
 #Query parameter
 @app.get("/cards")
-async def getCards(request:Request, q:str=""):
+async def getCards(request:Request, session: SessionDep , q:str=""):
     search_results = []
-    for card in card_list:
-        if q in card.front:
-            search_results.append(card)
-    return templates.TemplateResponse(
-        name="cards.html", request=request, context={"cards": search_results or card_list}
-    )
+    if q:
+        cards = session.exec(select(Card).where(Card.front.contains(q))).all()
+    else:
+        cards = session.exec(select(Card)).all()
+    return templates.TemplateResponse(request, "cards.html", {"cards": cards})
 
 #Path Parameter
 @app.get("/cards/{card_id}", name="get_card", response_class=HTMLResponse)
-async def get_card_by_id(request:Request, card_id:int):
-    for card in card_list:
-        if card.id == card_id:
-            return templates.TemplateResponse(
-                request=request, name="card.html", context={"card": card}
-    )
-    return None
+async def get_card_by_id(request: Request, card_id: int, session: SessionDep):
+    db_card = session.exec(select(Card).where(Card.id == card_id)).first()
+    if not db_card:
+        raise HTTPException(status_code=404, detail="Card not found")
+    return templates.TemplateResponse(request, "card.html", {"card": db_card})
 
 @app.get("/play", response_class=HTMLResponse)
 async def play(request:Request):
     card = card_list[random.randint(0, (len(card_list)-1))]
-    return templates.TemplateResponse(
-        request=request, name="play.html", context={"card": card}
-    )
+    return templates.TemplateResponse(request, "play.html", {"card": card})
 
 @app.get("/sets", response_class=HTMLResponse)
 async def list_sets(request: Request, session: SessionDep):
     sets = session.exec(select(Set).order_by(Set.name)).all()
-    return templates.TemplateResponse(
-        request=request, name="sets.html", context={"sets":sets}
-    )
+    return templates.TemplateResponse(request, "sets.html", {"sets": sets})
 
 @app.get("/users", response_class=HTMLResponse)
 async def list_users(request: Request):
-    return templates.TemplateResponse(
-        name="users.html", request=request, context={"users": user_list}
-    )
+    return templates.TemplateResponse(request, "users.html", {"users": user_list})
 
 @app.get("/sets/{set_id}", response_class=HTMLResponse)
 async def get_set(request: Request, set_id: int, session: SessionDep):
     db_set = session.exec(select(Set).where(Set.id == set_id)).first()
     if not db_set:
-        return {"error": "Set not found"}
-    return templates.TemplateResponse(
-        "set.html",
-        {"request": request, "set": db_set}
-    )
+        raise HTTPException(status_code=404, detail="Set not found")
+    # Changed from "sets.html" to "set.html" for individual set display
+    return templates.TemplateResponse(request, "set.html", {"set": db_set})
 
 
 @app.post("/cards/{card_id}/wrong")
@@ -140,19 +127,25 @@ async def mark_attempt(card_id: int):
             card.count += 1
             return card
 
-#Post Request to add card
-@app.post("/card/add")
-async def addCard(session: SessionDep, card:Card):
-    db_card = Card(front=card.front, back=card.back, set_id=card.set_id)
+@app.post("/card/add", response_class=HTMLResponse)
+async def addCard(
+    request: Request, 
+    session: SessionDep, 
+    front: str = Form(...), 
+    back: str = Form(...), 
+    set_id: int = Form(...)
+):
+    db_card = Card(front=front, back=back, set_id=set_id)
     session.add(db_card)
     session.commit()
     session.refresh(db_card)
-    return db_card
+    return templates.TemplateResponse(request, "card.html", {"card": db_card})
 
-@app.post("/sets/add")
-async def create_set(session: SessionDep, set:Set):
-    db_set = Set(name=set.name)
+
+@app.post("/sets/add", response_class=HTMLResponse)
+async def create_set(request: Request, session: SessionDep, name: str = Form(...)):
+    db_set = Set(name=name)
     session.add(db_set)
     session.commit()
     session.refresh(db_set)
-    return db_set
+    return templates.TemplateResponse(request, "set.html", {"set": db_set})

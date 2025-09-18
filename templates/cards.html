@@ -5,7 +5,7 @@
     <ul>
         {% for c in cards %}
             <li>
-                <a href="/cards/{{ c.id }}">{{ c.front }}</a>
+                <a href="/cards/{{ c.id }}">{{ c.front }} {{c.back}}</a>
             </li>
         {% endfor %}
     </ul>
