@@ -5,13 +5,12 @@
 
 {% block content %}
     <link href="{{ url_for('static', path='css/styles.css') }}" rel="stylesheet">
-    <div><a href="/cards/{{ card.id }}">View this card</a></div>
+    <div><a href="/cards">all cards</a></div>
     <body>
     <h1>Card {{ card.id }}</h1>
     <div><b>Front:</b> {{ card.front }}</div>
     <div><b>Back:</b> {{ card.back }}</div>
     </body>
+    <a href="{{card.id}}/edit">edit card</a>
 {% endblock %}
-
-
 
