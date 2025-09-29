@@ -4,13 +4,15 @@
 {% endblock %}
 
 {% block content %}
-    <link href="{{ url_for('static', path='css/styles.css') }}" rel="stylesheet">
-    <div><a href="/cards">all cards</a></div>
-    <body>
+    <header>   
+    <link href="{{ url_for('static', path='css/styles.css') }}" rel="stylesheet">    
     <h1>Card {{ card.id }}</h1>
-    <div><b>Front:</b> {{ card.front }}</div>
-    <div><b>Back:</b> {{ card.back }}</div>
-    </body>
+    </header>
+    <body>
+    <div  class="content"><a href="/cards">all cards</a></div>
+    <div  class="content"><b>Front:</b> {{ card.front }}</div>
+    <div  class="content"><b>Back:</b> {{ card.back }}</div>
     <a href="{{card.id}}/edit">edit card</a>
+    </body>
 {% endblock %}
 

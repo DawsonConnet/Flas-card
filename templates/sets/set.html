@@ -2,9 +2,11 @@
 
 
 {% block content %}
-<h1>{{ set.name }}</h1>
-<div><a href="/sets">all sets</a></div>
-<ul>
+<header>
+    <h1>{{ set.name }}</h1>
+</header>
+<div class="content"><a href="/sets">all sets</a></div>
+<ul class="content">
     {% for card in set.cards %}
         <li>
             <a>
@@ -13,7 +15,9 @@
         </li>
     {% endfor %}
 </ul>
+<div class="content">
 <a href="{{set.id}}/edit">edit set</a>
+</div>
 {% endblock %}
 
 

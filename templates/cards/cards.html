@@ -1,13 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>All Cards</h1>
-    <ul>
+    <header>
+        <h1>All Cards</h1>
+    </header>
+    <ul class="content">
         {% for c in cards %}
             <li>
                 <a href="/cards/{{ c.id }}">{{ c.front }} {{c.back}}</a>
             </li>
         {% endfor %}
     </ul>
+    <div class="content">
     <a href="/cards/add">Add New Cards</a>
+    </div>
 {% endblock %}

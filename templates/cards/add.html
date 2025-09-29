@@ -1,5 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
 {% if card %}
+<header>
 <h2>Edit Card</h2>
+</header>
 <form action="/cards/{{ card.id }}/edit" method="post">
     Front: <input type="text" name="front" value={{card.front}}><br>
     Back: <input type="text" name="back" value={{card.back}}><br>
@@ -18,6 +23,9 @@
 </button>
 </form>
 {% else %}
+<header>
+<h2>Add New Card</h2>
+</header>
 <form action="/cards/add" method="post">
     Front: <input type="text" name="front"><br>
     Back: <input type="text" name="back"><br>
@@ -34,4 +42,7 @@
     <input type="submit" value="Submit">
 </form>
 {% endif %}
-<a href='/cards/'>Cancel</a>
+<div  class="content">
+<a href='/sets/'>Cancel</a>
+</div>
+{% endblock %}

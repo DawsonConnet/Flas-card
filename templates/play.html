@@ -1,7 +1,20 @@
 {% extends "base.html" %}
 
-{% block head %}
-    <h1>Play</h1>
-    <div><b>{{card.front}}</b></div> 
-    <div>{{card.back}}</div> <br>
+{% block head%}
+  <head>
+      <link href="{{ url_for('static', path='css/styles.css') }}" rel="stylesheet">
+      <script src="{{url_for('static', path='scripts/site.js')}}"></script>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+{% endblock %}
+
+{% block content %}
+    <header>    
+        <h1>Play</h1>
+    </header>
+
+<body>
+    <div class="content"><b>{{card.front}}</b></div> 
+    <div class="content">{{card.back}}</div> <br>
+</body>
 {% endblock %}

@@ -1,5 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
 {% if set %}
-<h2>Edit Set</h2>
+<header>
+    <h2>Edit Set</h2>
+</header>
 <form action="/sets/{{ set.id }}/edit" method="post">
     Name: <input type="text" name="name" value="{{ set.name }}"><br>
     <input type="submit" value="Update">
@@ -10,10 +15,15 @@
 </button>
 </form>
 {% else %}
-<h2>Add a New Set</h2>
+<header>
+    <h2>Add a New Set</h2>
+</header>
 <form action="/sets/add" method="post">
     Name: <input type="text" name="name" required><br>
     <input type="submit" value="Submit">
 </form>
 {% endif %}
+<div  class="content">
 <a href='/sets/'>Cancel</a>
+</div>
+{% endblock %}

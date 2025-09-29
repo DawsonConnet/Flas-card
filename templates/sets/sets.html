@@ -1,13 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>All Sets</h1>
-    <ul>
+    <header >
+        <h1>All Sets</h1>
+    </header>
+    <ul  class="content">
         {% for s in sets %}
             <li>
                 <a href="{{ url_for('get_set', set_id=s.id) }}">{{ s.name }}</a>
             </li>
         {% endfor %}
     </ul>
+    <div class="content">
     <a href="/sets/add">Add New Set</a>
+    </div>
 {% endblock %}
