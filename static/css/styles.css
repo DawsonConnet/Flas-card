@@ -200,7 +200,6 @@ select:focus {
   flex-direction: column;
   justify-content: flex-start;
   text-align: left;
-  cursor: pointer;
 }
 
 .play-card:hover {
