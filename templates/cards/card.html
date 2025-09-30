@@ -10,8 +10,10 @@
     </header>
     <body>
     <div  class="content"><a href="/cards">all cards</a></div>
-    <div  class="content"><b>Front:</b> {{ card.front }}</div>
-    <div  class="content"><b>Back:</b> {{ card.back }}</div>
+    <div class="card">
+    <div class="front">{{ card.front }}</div>
+    <div class="back">{{ card.back }}</div>
+    </div>
     <a href="{{card.id}}/edit">edit card</a>
     </body>
 {% endblock %}

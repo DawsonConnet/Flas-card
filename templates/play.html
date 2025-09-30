@@ -13,8 +13,19 @@
         <h1>Play</h1>
     </header>
 
-<body>
-    <div class="content"><b>{{card.front}}</b></div> 
-    <div class="content">{{card.back}}</div> <br>
-</body>
+<div class="play-card">
+    <div class="front"><b>{{card.front}}</b></div> 
+    <div class="back">{{card.back}}</div> <br>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const playCard = document.querySelector('.play-card');
+    
+    if (playCard) {
+      playCard.addEventListener('click', function() {
+        this.classList.toggle('revealed');
+      });
+    }
+  });
+</script>
 {% endblock %}
