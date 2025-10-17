@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block head%}
+  <head>
+      <link href="{{ url_for('static', path='css/styles.css') }}" rel="stylesheet">
+      <script src="{{url_for('static', path='scripts/site.js')}}"></script>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+{% endblock %}
+
+{% block content %}
+    <header>    
+        <h1>Play with friends</h1>
+    </header>
+{% if not username or username is none %}
+<form action="/playwithfriends" method="post">
+    <header>
+        <h2>Choose your username</h2>
+    </header>
+    <input type="text"  name=username>
+    <input type="submit" value="Submit">
+</form>
+{% else %}
+<section>
+    <div>
+        <h3>Players</h3>
+        <table id="scoreboard" style="width: 200px; text-align:center;">
+        <thead>
+            <tr><th>Player</th><th>Score</th></tr>
+        </thead>
+        <tbody id="scoreBody"></tbody>
+    </table>
+    </div>
+    
+    <div>
+        <div>
+            <h3>Select Sets</h3>
+            <select id="setsSelect" multiple size="5">
+                <option value="all" selected>All Sets</option>
+                {% for set in sets %}
+                <option value="{{set.id}}">{{set.name}}</option>
+                {% endfor %}
+            </select>
+            <button onclick="startNewGame()" class="btn">Start New Game</button>
+        </div>
+        
+        <div id="questionArea" style="display: none;">
+            <h3 id="currentQuestion"></h3>
+            <div id="timer"></div>
+        </div>
+        
+        <ul id="messages"></ul>
+        
+        <form action="" onsubmit="sendMessage(event)">
+            <input type="text" id="messageText" placeholder="Type your answer or chat..."/>
+            <button>Send</button>
+        </form>
+    </div>
+</section>
+{% endif %}
+<script>
+function getCookie(name) { 
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift(); 
+}
+
+var client_id = getCookie('username');
+var ws = new WebSocket(`ws://${window.location.host}/ws/${client_id}`);
+
+ws.onmessage = function(event){
+    const data = JSON.parse(event.data);
+    const messages = document.getElementById('messages');
+
+    if (data.type === "chat") {
+        const li = document.createElement('li');
+        li.textContent = `${data.sender}: ${data.message}`;
+        messages.appendChild(li);
+    } 
+    else if (data.type === "show_card") {
+        const questionArea = document.getElementById("questionArea");
+        questionArea.style.display = "block";
+        questionArea.innerHTML = `<h3>${data.card.question}</h3>`;
+    } 
+    else if (data.type === "score_update") {
+        const body = document.getElementById("scoreBody");
+        body.innerHTML = "";
+        data.players.forEach(p => {
+            const row = document.createElement("tr");
+            row.innerHTML = `<td>${p.name}</td><td>${p.score}</td>`;
+            body.appendChild(row);
+    });
+}
+};
+
+function sendMessage(event){
+    const input = document.getElementById("messageText");
+    ws.send(JSON.stringify({
+        type: "message",
+        payload: { message: input.value }
+    }));
+    input.value = '';
+    event.preventDefault();
+}
+
+function startNewGame() {
+    const select = document.getElementById("setsSelect");
+    const selectedSets = Array.from(select.selectedOptions).map(o => o.value);
+    ws.send(JSON.stringify({
+        type: "new_question",
+        sets: selectedSets
+    }));
+}
+
+</script>
+{% endblock %}

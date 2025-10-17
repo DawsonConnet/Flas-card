@@ -5,6 +5,7 @@ class User(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     name: str
     email: str
+    gender: str| None = ""
     sets: List["Set"] = Relationship(back_populates="user")  # keep as is
 
 class Set(SQLModel, table=True):

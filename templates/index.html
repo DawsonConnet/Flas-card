@@ -12,7 +12,15 @@
   <header>  
     <h1>Flashcard</h1>
   </header>
-    {% for card in cards %}
-    {% import "macros/card.html" as card_macro %}
-  {% endfor %}
+  <div class="content" style="text-align: center;">
+    <h2>Welcome to Flashcard Game!</h2>
+    <p style="margin: 1rem 0 2rem 0;">Choose an option below to get started</p>
+    
+    <div style="display: flex; flex-direction: column; gap: 1rem; max-width: 400px; margin: 0 auto;">
+      <a href="/cards" class="btn">View All Cards</a>
+      <a href="/sets" class="btn">Browse Sets</a>
+      <a href="/play" class="btn">Play Solo</a>
+      <a href="/playwithfriends" class="btn">Play with Friends</a>
+    </div>
+  </div>
 {% endblock %}
