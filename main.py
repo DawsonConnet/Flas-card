@@ -1,12 +1,12 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.templating import Jinja2Templates
-from fastapi import Request, Form, Cookie, WebSocketDisconnect, WebSocket
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi import Request, Form, WebSocketDisconnect, WebSocket
+from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
-from sqlmodel import Session, Field, SQLModel, create_engine, select, Relationship
+from sqlmodel import select
 from db.session import create_db_and_tables, SessionDep
-from db.models import Card, Set, User
+from db.models import Card, Set
 from routers import cards, sets, users
 import random
 import json
@@ -77,9 +77,7 @@ async def play(request: Request, session: SessionDep):
 
 @app.get("/playwithfriends")
 async def playwithfriends(request:Request, session:SessionDep, response_class=HTMLResponse):
-    return templates.TemplateResponse(
-        request, "playWithFriends.html"
-    )
+    return templates.TemplateResponse(request, "playWithFriends.html")
 
 @app.post("/playwithfriends")
 async def enterplay(request: Request, session: SessionDep,response_class=HTMLResponse, username: str= Form(...)):
@@ -129,10 +127,7 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str, session: Sess
                     cards = session.exec(select(Card)).all()
                     if cards:
                         current_card = random.choice(cards)
-                        await manager.broadcast({
-                            "type": "show_card",
-                            "card": {"id": current_card.id, "question": current_card.front}
-                        })
+                        await manager.broadcast({"type": "show_card","card": {"id": current_card.id, "question": current_card.front}})
                 else:
                     await manager.broadcast({"type": "chat", "sender": client_id, "message": message})
     except WebSocketDisconnect:
