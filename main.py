@@ -48,6 +48,7 @@ class ProxyHeadersMiddleware(BaseHTTPMiddleware):
             request.scope["server"] = (request.headers["x-forwarded-host"], None)
         return await call_next(request)
 
+app.add_middleware(ProxyHeadersMiddleware)
 class ConnectionManager:
     def __init__(self):
         self.active_connections: dict[str,WebSocket] = {}
