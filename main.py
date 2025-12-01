@@ -8,6 +8,9 @@ from sqlmodel import select
 from db.session import create_db_and_tables, SessionDep
 from db.models import Card, Set
 from routers import cards, sets, users
+from fastapi.middleware.cors import CORSMiddleware
+from pathlib import Path
+from starlette.middleware.base import BaseHTTPMiddleware
 import random
 import json
 
@@ -22,9 +25,28 @@ async def lifespan(app: FastAPI):
     yield
 
 app = FastAPI(lifespan=lifespan)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.include_router(cards.router)
 app.include_router(sets.router)
 app.include_router(users.router)
+
+BASE_DIR = Path(__file__).resolve().parent
+
+
+class ProxyHeadersMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        # Trust Railway's proxy headers
+        if "x-forwarded-proto" in request.headers:
+            request.scope["scheme"] = request.headers["x-forwarded-proto"]
+        if "x-forwarded-host" in request.headers:
+            request.scope["server"] = (request.headers["x-forwarded-host"], None)
+        return await call_next(request)
 
 class ConnectionManager:
     def __init__(self):
@@ -59,7 +81,7 @@ manager = ConnectionManager()
 current_card = None
 players = {}
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
 
 @app.get("/", response_class=HTMLResponse)
 async def root(request: Request, session: SessionDep):
