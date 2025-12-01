@@ -64,7 +64,7 @@ function getCookie(name) {
 }
 
 var client_id = getCookie('username');
-var ws = new WebSocket(`ws://${window.location.host}/ws/${client_id}`);
+var ws = new WebSocket(`wss://${window.location.host}/ws/${client_id}`);
 
 ws.onmessage = function(event){
     const data = JSON.parse(event.data);
