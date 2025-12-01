@@ -26,9 +26,9 @@
 <header>
 <h2>Add New Card</h2>
 </header>
-<form action="/cards/add" method="post">
-    Front: <input type="text" name="front"><br>
-    Back: <input type="text" name="back"><br>
+<form action="/cards/add" method="post" >
+    Front: <input type="email" name="front" required><br>
+    Back: <input type="text" name="back" required ><br>
     Set: <select name="set_id">
             <option name="" value=""></option>
         {% for set in sets %}     

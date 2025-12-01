@@ -1,0 +1,5 @@
+fastapi[standard]
+sqlmodel
+uvicorn[standard]
+pytest
+beautifulsoup4
